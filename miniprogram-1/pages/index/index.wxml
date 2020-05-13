@@ -4,14 +4,14 @@
 		<button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取用户名 </button>
 		<block wx:else>
 			<image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-			<text class="userinfo-nickname">{{userInfo.nickName}} 是帅比</text>
+			<text class="userinfo-nickname">{{userInfo.nickName}}</text>
 			<!-- <text class="userinfo-nickname">{{userInfo.city}}</text>
 			<text class="userinfo-nickname">{{userInfo.province}}</text>
 			<text class="userinfo-nickname">{{userInfo.country}}</text> -->
-			<text wx:if="{{userInfo.gender === 1}}" class="userinfo-nickname">male</text>
+			<!-- <text wx:if="{{userInfo.gender === 1}}" class="userinfo-nickname">male</text>
 			<block wx:else>
 				<text class="userinfo-nickname">female</text>
-			</block>
+			</block> -->
       <button type="primary" bindtap="scanCode" class="scancode-btn">扫码校核真伪</button>
       <text class="scancoderes">扫码结果:</text>
       <text wx:if="{{hasScanInfo}}" class="userinfo-nickname">{{scanCodeInfo}}</text>
