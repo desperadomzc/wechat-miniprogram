@@ -8,28 +8,28 @@ import javax.persistence.*;
 @Entity
 public class Product {
     @Id
+    @Column
     @GenericGenerator(name = "systemUUID", strategy = "uuid")
     @GeneratedValue(generator = "systemUUID")
-    private long id;
+    private String id;
 
     @Column
     private String RIN;
 
     @Column
-    private SealStatus sealStatus;
+    private String sealStatus;
 
     @Column
     private long created_ts;
 
-    public enum SealStatus {
-        CREATED,DESTROYED
-    }
+    @Column
+    private int scan_count;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -41,12 +41,20 @@ public class Product {
         this.RIN = RIN;
     }
 
-    public SealStatus getSealStatus() {
+    public String getSealStatus() {
         return sealStatus;
     }
 
-    public void setSealStatus(SealStatus sealStatus) {
+    public void setSealStatus(String sealStatus) {
         this.sealStatus = sealStatus;
+    }
+
+    public int getScan_count() {
+        return scan_count;
+    }
+
+    public void setScan_count(int scan_count) {
+        this.scan_count = scan_count;
     }
 
     public long getCreated_ts() {
@@ -57,13 +65,18 @@ public class Product {
         this.created_ts = created_ts;
     }
 
-    public JSONObject toJSON(){
+    public JSONObject toJSON() {
         JSONObject json = new JSONObject();
-        json.put("id",id);
-        json.put("RIN",RIN);
-        json.put("create_time",created_ts);
-        json.put("seal_status",sealStatus);
+        json.put("id", id);
+        json.put("RIN", RIN);
+        json.put("create_time", created_ts);
+        json.put("seal_status", sealStatus);
+        json.put("scan_count", scan_count);
 
         return json;
+    }
+
+    public String toJSONStr(){
+        return toJSON().toString();
     }
 }

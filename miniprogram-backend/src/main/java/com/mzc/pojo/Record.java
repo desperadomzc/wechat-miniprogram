@@ -18,10 +18,18 @@ public class Record {
     private long time;
 
     @Column
-    private int scan_count;
+    private String user_nickname;
 
     @Column
-    private String user_nickname;
+    private int serial_num;
+
+    public int getSerial_num() {
+        return serial_num;
+    }
+
+    public void setSerial_num(int serial_num) {
+        this.serial_num = serial_num;
+    }
 
     public long getId() {
         return id;
@@ -47,14 +55,6 @@ public class Record {
         this.time = time;
     }
 
-    public int getScan_count() {
-        return scan_count;
-    }
-
-    public void setScan_count(int scan_count) {
-        this.scan_count = scan_count;
-    }
-
     public String getUser_nickname() {
         return user_nickname;
     }
@@ -69,8 +69,13 @@ public class Record {
         json.put("product",product.toJSON());
         json.put("time",time);
         json.put("user_nickname",user_nickname);
+        json.put("serial_num",serial_num);
 
         return json;
+    }
+
+    public String toJSONStr(){
+        return toJSON().toString();
     }
 }
 
