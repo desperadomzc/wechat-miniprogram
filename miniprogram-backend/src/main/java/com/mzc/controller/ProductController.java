@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/product/**")
 public class ProductController {
@@ -19,16 +22,26 @@ public class ProductController {
 
     private final static Logger logger = LogManager.getLogger(ProductController.class);
 
+    //test end point
+    @GetMapping("/product/test")
+    public ResponseEntity getTest() {
+        Map<String, Object> map = new HashMap<>();
+        String message = "hello world";
+        map.put("message", message);
+        return ResponseEntity.ok().body(map);
+    }
+
     //create new product when produced
     //seal status initiated as CREATED
-    @PostMapping(value = "/product/create", consumes = "application/json")
+    @PostMapping(value = "/product/create", produces = "application/json")
     public ResponseEntity createProduct(@RequestBody String product) {
         logger.info("Enter create product end point");
         JSONObject pjo = new JSONObject(new JSONTokener(new JSONObject(product).toString()));
-        if (pjo.has("RIN")) {
+        if (pjo.has("RIN") && pjo.has("pid")) {
             String rin = pjo.get("RIN").toString();
-            Product p = productDAO.createProduct(rin);
-            if(p == null){
+            String pid = pjo.get("pid").toString();
+            Product p = productDAO.createProduct(pid, rin);
+            if (p == null) {
                 return ResponseEntity.status(400).body("Unable to create such product");
             }
             return ResponseEntity.status(201).body(p.toJSONStr());
@@ -37,23 +50,23 @@ public class ProductController {
         }
     }
 
-    @GetMapping(value = "/product/get/{pid}/{RIN}")
+    @GetMapping(value = "/product/get/{pid}/{RIN}", produces = "application/json")
     public ResponseEntity getProduct(@PathVariable(value = "pid") String pid, @PathVariable("RIN") String RIN) {
         logger.info("Enter get product end point");
         Product p = productDAO.getProduct(pid, RIN);
         if (p == null) {
-            return ResponseEntity.status(404).body("Product with id: " + pid + " not found");
+            return ResponseEntity.status(404).body("Product with serial number: " + pid + " not found");
         } else {
             return ResponseEntity.status(200).body(p.toJSONStr());
         }
     }
 
-    @PutMapping(value = "/product/put/{pid}/{RIN}")
+    @PutMapping(value = "/product/put/{pid}/{RIN}", produces = "application/json")
     public ResponseEntity updateProduct(@PathVariable("pid") String pid, @PathVariable("RIN") String RIN, @RequestBody String product) {
         logger.info("Enter update product end point");
-        Product p = productDAO.getProduct(pid,RIN);
+        Product p = productDAO.getProduct(pid, RIN);
         if (p == null) {
-            return ResponseEntity.status(404).body("Product with id: " + pid + " not found");
+            return ResponseEntity.status(404).body("Product with serial number: " + pid + " not found");
         } else {
             JSONObject pjo = new JSONObject(new JSONTokener(new JSONObject(product).toString()));
             if (pjo.has("seal_status")) {

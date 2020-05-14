@@ -26,7 +26,7 @@ public class RecordController {
 
     //create a new record with time,user_nickname,scan_count+1
     //all data in json format
-    @PostMapping(value = "/record/create/{pid}/{RIN}/{username}", consumes = "application/json")
+    @PostMapping(value = "/record/create/{pid}/{RIN}/{username}", consumes = "application/json", produces = "application/json")
     public ResponseEntity createRecord(@PathVariable("pid") String pid,
                                        @PathVariable("RIN") String RIN,
                                        @PathVariable("username") String username){
@@ -40,7 +40,7 @@ public class RecordController {
     }
 
     //get all records of product with pid
-    @GetMapping("/record/get/{pid}/{RIN}")
+    @GetMapping(value = "/record/get/{pid}/{RIN}", produces = "application/json")
     public ResponseEntity getRecord(@PathVariable("pid")String pid, @PathVariable("RIN") String RIN){
         Product p = productDAO.getProduct(pid,RIN);
         if(p == null){

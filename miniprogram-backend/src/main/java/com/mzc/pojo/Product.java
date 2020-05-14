@@ -13,7 +13,10 @@ public class Product {
     @GeneratedValue(generator = "systemUUID")
     private String id;
 
-    @Column
+    @Column(unique = true,nullable = false)
+    private String pid;
+
+    @Column(unique = true,nullable = false)
     private String RIN;
 
     @Column
@@ -31,6 +34,14 @@ public class Product {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid;
     }
 
     public String getRIN() {
@@ -68,6 +79,7 @@ public class Product {
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
         json.put("id", id);
+        json.put("pid",pid);
         json.put("RIN", RIN);
         json.put("create_time", created_ts);
         json.put("seal_status", sealStatus);
