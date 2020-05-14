@@ -31,6 +31,7 @@ public class RecordDAO extends DAO {
             getSession().save(record);
 
             commit();
+            close();
             return record;
         } catch (HibernateException e) {
             rollback();

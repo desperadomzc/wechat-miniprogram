@@ -180,7 +180,7 @@ Page({
     }
   },
   getUserInfo: function (e) {
-    console.log(e.detail.userInfo)
+    console.log(e.detail.userInfo.nickName);
     app.globalData.userInfo = e.detail.userInfo
     this.setData({
       userInfo: e.detail.userInfo,
@@ -188,17 +188,46 @@ Page({
     })
   },
   scanCode: function (ele) {
+    var scanres = '';
     console.log(ele);
     wx.scanCode({
       onlyFromCamera: true,
       scanType: ['qrCode'],
       success: (res) => {
         console.log(res.result);
+        scanres = res.result;
+        this.postRecord(scanres);
+      },
+    });
+  },
+  postRecord: function(scanres){
+    if (this.scanres !== '') {
+      var tokens = scanres.split('-');
+      var pid, rin;
+      if (tokens.length < 2 ) {
         this.setData({
-          scanCodeInfo: res.result,
+          scanCodeInfo : 'no available information from this QRcode',
           hasScanInfo: true
         })
-      },
-    })
+      } else {
+        var that = this;
+        pid = tokens[0];
+        rin = tokens[1];
+        wx.request({
+          url: 'http://localhost:8080/record/create/' + pid + '/' + rin +'/' + 'test',
+          method: 'POST',
+          header: {
+            'content-type': 'application/json'
+          },
+          success: function (res) {
+            console.log(res.data);
+            that.setData({
+              scanCodeInfo : res.data.product.pid + '校验成功',
+              hasScanInfo: true
+            })
+          }
+        });
+      }
+    }
   }
 })

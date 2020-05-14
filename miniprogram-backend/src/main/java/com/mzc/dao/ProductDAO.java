@@ -9,10 +9,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductDAO extends DAO {
 
-    public Product createProduct(String RIN) {
+    public Product createProduct(String pid, String RIN) {
         try {
             begin();
-            int x = getSession().createCriteria(Product.class).add(Restrictions.eq("RIN", RIN)).list().size();
+
+            int x = getSession().createCriteria(Product.class).add(Restrictions.eq("pid", pid)).list().size();
             if (x > 0) {
                 return null;
             }
@@ -21,7 +22,7 @@ public class ProductDAO extends DAO {
             p.setCreated_ts(System.currentTimeMillis());
             p.setSealStatus("created");
             p.setScan_count(0);
-
+            p.setPid(pid);
             //store hashed RIN to prevent server hacked risk
             //RIN is secured in this way
             String hashed = BCrypt.hashpw(RIN, BCrypt.gensalt());
@@ -42,12 +43,12 @@ public class ProductDAO extends DAO {
         try {
             begin();
             Product p = (Product) getSession().createCriteria(Product.class)
-                    .add(Restrictions.eq("id", pid)).uniqueResult();
-            if(p == null){
+                    .add(Restrictions.eq("pid", pid)).uniqueResult();
+            if (p == null) {
                 return null;
             }
-            boolean match = BCrypt.checkpw(RIN,p.getRIN());
-            if(!match){
+            boolean match = BCrypt.checkpw(RIN, p.getRIN());
+            if (!match) {
                 return null;
             }
             commit();
@@ -59,7 +60,7 @@ public class ProductDAO extends DAO {
         return null;
     }
 
-    public void updateProduct(Product p){
+    public void updateProduct(Product p) {
         try {
             begin();
             getSession().saveOrUpdate(p);
